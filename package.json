@@ -1,0 +1,35 @@
+{
+  "name": "karabiner-switch",
+  "version": "1.0.0",
+  "description": "CLI for switching active Karabiner-Elements selected profile",
+  "main": "dist/main.js",
+  "scripts": {
+    "test": "test/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/nomaed/karabiner-switch.git"
+  },
+  "keywords": [
+    "karabiner",
+    "profile",
+    "switch",
+    "change",
+    "activate",
+    "keyboard",
+    "macos"
+  ],
+  "author": "Boris Aranovich <nomaed@gmail.com> (https://github.com/nomaed)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nomaed/karabiner-switch/issues"
+  },
+  "homepage": "https://github.com/nomaed/karabiner-switch#readme",
+  "devDependencies": {
+    "tslint": "^3.15.1",
+    "typescript": "^2.0.3"
+  },
+  "dependencies": {
+    "@types/node": "^6.0.41"
+  }
+}
