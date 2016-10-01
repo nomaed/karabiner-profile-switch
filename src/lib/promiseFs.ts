@@ -20,3 +20,15 @@ export function readFile(file: string): Promise<Buffer> {
     });
   });
 }
+
+export function writeFile(file: string, data: Buffer | string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(file, data, err => {
+      if (!err) {
+        resolve();
+      } else {
+        reject(err.message);
+      }
+    });
+  });
+}

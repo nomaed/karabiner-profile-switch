@@ -1,14 +1,19 @@
 {
-  "name": "karabiner-switch",
+  "name": "karabiner-elements-switch",
   "version": "1.0.0",
   "description": "CLI for switching active Karabiner-Elements selected profile",
-  "main": "dist/main.js",
+  "main": "bin/kep",
+  "bin": "bin/kep",
   "scripts": {
+    "install": "npm run build",
+    "build": "npm run lint; rollup -c",
+    "lint": "tslint -c tslint.json --project tsconfig.json",
+    "watch": "rollup -c --watch",
     "test": "test/index.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/nomaed/karabiner-switch.git"
+    "url": "git+ssh://git@github.com/nomaed/karabiner-elements-switch.git"
   },
   "keywords": [
     "karabiner",
@@ -22,14 +27,19 @@
   "author": "Boris Aranovich <nomaed@gmail.com> (https://github.com/nomaed)",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/nomaed/karabiner-switch/issues"
+    "url": "https://github.com/nomaed/karabiner-elements-switch/issues"
   },
-  "homepage": "https://github.com/nomaed/karabiner-switch#readme",
+  "homepage": "https://github.com/nomaed/karabiner-elements-switch#readme",
   "devDependencies": {
+    "@types/chalk": "^0.4.30",
+    "@types/node": "^6.0.41",
+    "rollup": "^0.36.1",
+    "rollup-plugin-typescript": "^0.8.1",
+    "rollup-watch": "^2.5.0",
     "tslint": "^3.15.1",
     "typescript": "^2.0.3"
   },
   "dependencies": {
-    "@types/node": "^6.0.41"
+    "chalk": "^1.1.3"
   }
 }
