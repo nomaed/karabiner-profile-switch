@@ -9,3 +9,26 @@ the `selected` profile in the JSON file. This eliminates the need to edit the JS
 or reconneting input devices that require different configuration.
 
 **TODO**: Auto-restart Karabiner-Elemenets.
+
+# Installation
+
+```
+npm i -g karabiner-profile-switch
+```
+
+# Usage
+```
+# kps
+```
+
+### Example with output:
+```sh
+$ kps
+Karabiner-Elements profiles:
+    1) Internal Keys
+ -> 2) Apple USB Keys
+Please select profile number: 1
+Setting active profile: Internal Keys
+Saving data...
+Done.
+```
