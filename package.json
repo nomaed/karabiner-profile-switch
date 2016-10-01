@@ -2,11 +2,20 @@
   "name": "karabiner-profile-switch",
   "version": "1.0.1",
   "description": "CLI for switching active Karabiner-Elements selected profile",
-  "main": "bin/kps",
-  "bin": "bin/kps",
+  "engines": {
+    "node": "6"
+  },
+  "main": "src/main.ts",
+  "bin": {
+    "kps": "./bin/kps"
+  },
+  "directories": {
+    "bin": "bin"
+  },
+  "preferGlobal": true,
   "scripts": {
+    "clean": "rm -rf bin",
     "prepublish": "npm run build",
-    "install": "npm run build",
     "build": "npm run lint; rollup -c",
     "lint": "tslint -c tslint.json --project tsconfig.json",
     "watch": "rollup -c --watch",
