@@ -5,6 +5,7 @@
   "main": "bin/kps",
   "bin": "bin/kps",
   "scripts": {
+    "prepublish": "npm run build",
     "install": "npm run build",
     "build": "npm run lint; rollup -c",
     "lint": "tslint -c tslint.json --project tsconfig.json",
