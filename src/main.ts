@@ -34,9 +34,7 @@ exists(configFile)
   .then(selectNewProfile)
   .then(saveConfig)
   .then(restartService)
-  .then(() => {
-    console.log("Done.");
-  })
+  .then(() => console.log("Done."))
   .catch(err => {
     console.error(chalk.red(err));
     process.exit(1);
@@ -45,7 +43,6 @@ exists(configFile)
 function loadConfig(): Promise<any> {
   return readFile(configFile);
 }
-
 
 export function parseConfig(data: Buffer): Promise<IKarabinerConfigFile> {
   return new Promise((resolve, reject) => {
