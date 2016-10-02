@@ -1,14 +1,16 @@
 import * as chalk from "chalk";
 import { IKarabinerConfigFile } from "./types";
-import { exists, readFile, writeFile } from "./lib/promiseFs";
-import { parseConfig, validateConfig } from "./lib/data";
 import { readChar, readLine } from "./lib/input";
+import { exists, readFile, writeFile, exec } from "./lib/promisify";
 
 // set default config file location
-const defaultConfig = "~/.karabiner.d/configuration/karabiner.json";
+const config = {
+  defultConfigFile: "~/.karabiner.d/configuration/karabiner.json",
+  service: "org.pqrs.karabiner.karabiner_console_user_server",
+};
 
 // (TODO) read config file location from args or use default
-let configFile = defaultConfig;
+let configFile = config.defultConfigFile;
 
 // keep list of profiles once data has been loaded
 let profilesData: IKarabinerConfigFile;
@@ -31,6 +33,7 @@ exists(configFile)
   .then(cacheConfig)
   .then(selectNewProfile)
   .then(saveConfig)
+  .then(restartService)
   .then(() => {
     console.log("Done.");
   })
@@ -41,6 +44,36 @@ exists(configFile)
 
 function loadConfig(): Promise<any> {
   return readFile(configFile);
+}
+
+
+export function parseConfig(data: Buffer): Promise<IKarabinerConfigFile> {
+  return new Promise((resolve, reject) => {
+    // conver to JSON
+    const json = JSON.parse(data.toString());
+    resolve(json);
+  });
+}
+
+export function validateConfig(cfg: IKarabinerConfigFile): Promise<IKarabinerConfigFile> {
+  return new Promise((resolve, reject) => {
+    // check for data type
+    if (!cfg || typeof cfg !== "object") {
+      reject("Invalid data type detected");
+      return;
+    }
+    // check for profiles
+    if (!cfg.profiles || !Array.isArray(cfg.profiles)) {
+      reject("No profiles were found");
+      return;
+    }
+    // make sure all profiles have valid names
+    if (!cfg.profiles.every(profile => Boolean(profile.name))) {
+      reject("Invalid (unnamed) profiles found");
+      return;
+    }
+    resolve(cfg);
+  });
 }
 
 function cacheConfig(cfg: IKarabinerConfigFile) {
@@ -88,4 +121,10 @@ function saveConfig(selIdx: number): Promise<void> {
 
   console.log("Saving data...");
   return writeFile(configFile, JSON.stringify(profilesData, undefined, 2));
+}
+
+function restartService(): Promise<void> {
+  console.log("Restarting service...");
+  return exec(`launchctl stop ${config.service}`)
+    .then(() => exec(`launchctl start ${config.service}`));
 }

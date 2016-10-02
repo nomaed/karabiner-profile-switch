@@ -1,8 +1,31 @@
 #!/usr/bin/env node
 'use strict';
 
+Object.defineProperty(exports, '__esModule', { value: true });
+
 var chalk = require('chalk');
 var fs = require('fs');
+var child_process = require('child_process');
+
+function readLine(encoding) {
+    return getData(false, encoding);
+}
+function getData(raw, encoding) {
+    return new Promise((resolve, reject) => {
+        const stdin = process.stdin;
+        const wasRaw = stdin.isRaw;
+        if (encoding) {
+            stdin.setEncoding(encoding);
+        }
+        stdin.setRawMode(raw);
+        stdin.resume();
+        stdin.once("data", (data) => {
+            stdin.pause();
+            stdin.setRawMode(wasRaw);
+            resolve(data);
+        });
+    });
+}
 
 function exists$1(file) {
     return new Promise((resolve, reject) => {
@@ -38,7 +61,55 @@ function writeFile$1(file, data) {
         });
     });
 }
+function exec$1(command, options) {
+    return new Promise((resolve, reject) => {
+        child_process.exec(command, options, (err, stdout, stderr) => {
+            if (err && err.code !== "0") {
+                reject(err.message);
+                return;
+            }
+            resolve({ stdout, stderr });
+        });
+    });
+}
 
+// set default config file location
+const config = {
+    defultConfigFile: "~/.karabiner.d/configuration/karabiner.json",
+    service: "org.pqrs.karabiner.karabiner_console_user_server",
+};
+// (TODO) read config file location from args or use default
+let configFile = config.defultConfigFile;
+// keep list of profiles once data has been loaded
+let profilesData;
+// if config file is located at home directory using shorthand syntax, expand to use full $HOME dir name
+if (configFile.charAt(0) === "~") {
+    const homeDir = process.env.HOME;
+    if (!homeDir) {
+        console.error("Unable to read home directory, aborting");
+        process.exit(10);
+    }
+    configFile = homeDir + configFile.substr(1);
+}
+// load configuration
+exists$1(configFile)
+    .then(loadConfig)
+    .then(parseConfig)
+    .then(validateConfig)
+    .then(cacheConfig)
+    .then(selectNewProfile)
+    .then(saveConfig)
+    .then(restartService)
+    .then(() => {
+    console.log("Done.");
+})
+    .catch(err => {
+    console.error(chalk.red(err));
+    process.exit(1);
+});
+function loadConfig() {
+    return readFile$1(configFile);
+}
 function parseConfig(data) {
     return new Promise((resolve, reject) => {
         // conver to JSON
@@ -65,60 +136,6 @@ function validateConfig(cfg) {
         }
         resolve(cfg);
     });
-}
-
-function readLine(encoding) {
-    return getData(false, encoding);
-}
-function getData(raw, encoding) {
-    return new Promise((resolve, reject) => {
-        const stdin = process.stdin;
-        const wasRaw = stdin.isRaw;
-        if (encoding) {
-            stdin.setEncoding(encoding);
-        }
-        stdin.setRawMode(raw);
-        stdin.resume();
-        stdin.once("data", (data) => {
-            stdin.pause();
-            stdin.setRawMode(wasRaw);
-            resolve(data);
-        });
-    });
-}
-
-// set default config file location
-const defaultConfig = "~/.karabiner.d/configuration/karabiner.json";
-// (TODO) read config file location from args or use default
-let configFile = defaultConfig;
-// keep list of profiles once data has been loaded
-let profilesData;
-// if config file is located at home directory using shorthand syntax, expand to use full $HOME dir name
-if (configFile.charAt(0) === "~") {
-    const homeDir = process.env.HOME;
-    if (!homeDir) {
-        console.error("Unable to read home directory, aborting");
-        process.exit(10);
-    }
-    configFile = homeDir + configFile.substr(1);
-}
-// load configuration
-exists$1(configFile)
-    .then(loadConfig)
-    .then(parseConfig)
-    .then(validateConfig)
-    .then(cacheConfig)
-    .then(selectNewProfile)
-    .then(saveConfig)
-    .then(() => {
-    console.log("Done.");
-})
-    .catch(err => {
-    console.error(chalk.red(err));
-    process.exit(1);
-});
-function loadConfig() {
-    return readFile$1(configFile);
 }
 function cacheConfig(cfg) {
     profilesData = cfg;
@@ -160,3 +177,11 @@ function saveConfig(selIdx) {
     console.log("Saving data...");
     return writeFile$1(configFile, JSON.stringify(profilesData, undefined, 2));
 }
+function restartService() {
+    console.log("Restarting service...");
+    return exec$1(`launchctl stop ${config.service}`)
+        .then(() => exec$1(`launchctl start ${config.service}`));
+}
+
+exports.parseConfig = parseConfig;
+exports.validateConfig = validateConfig;
