@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/nomaed/karabiner-elements-switch.git"
+    "url": "git+ssh://git@github.com/nomaed/karabiner-profile-switch.git"
   },
   "keywords": [
     "karabiner",
@@ -37,9 +37,9 @@
   "author": "Boris Aranovich <nomaed@gmail.com> (https://github.com/nomaed)",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/nomaed/karabiner-elements-switch/issues"
+    "url": "https://github.com/nomaed/karabiner-profile-switch/issues"
   },
-  "homepage": "https://github.com/nomaed/karabiner-elements-switch#readme",
+  "homepage": "https://github.com/nomaed/karabiner-profile-switch#readme",
   "devDependencies": {
     "@types/chalk": "^0.4.30",
     "@types/node": "^6.0.41",
