@@ -5,7 +5,7 @@ import { exists, readFile, writeFile, exec } from "./lib/promisify";
 
 // set default config file location
 const config = {
-  defultConfigFile: "~/.karabiner.d/configuration/karabiner.json",
+  defultConfigFile: "~/.config/karabiner/karabiner.json",
   service: "org.pqrs.karabiner.karabiner_console_user_server",
 };
 
