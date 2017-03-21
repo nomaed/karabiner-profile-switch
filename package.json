@@ -3,7 +3,7 @@
   "version": "1.0.4",
   "description": "CLI for switching active Karabiner-Elements selected profile",
   "engines": {
-    "node": "6"
+    "node": ">=6.0.0"
   },
   "main": "src/main.ts",
   "bin": {
