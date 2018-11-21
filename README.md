@@ -1,6 +1,7 @@
 # karabiner-profile-switch
 A simple CLI tool to switch between Karabiner-Elements profiles in the JSON configuration file
 
+> Note (end of 2018): this tool is probably no longer needed. KE has the list of profiles in the tray icon menu.
 
 This is a temporary solution for [Karabiner Elements](https://github.com/tekezo/Karabiner-Elements) for macOS Sierra.
 
